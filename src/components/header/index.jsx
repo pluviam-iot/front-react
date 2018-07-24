@@ -1,24 +1,25 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 import logo from '../../images/logo-branca.png';
 import './index.css';
 
 const Header = () => (
   <nav>
     <div className="nav-wrapper blue">
-      <a href="/" className="brand-logo">
+      <NavLink to="/" className="brand-logo">
         <img src={logo} alt="pluviam" />
         pluviam
-      </a>
+      </NavLink>
       <ul className="right hide-on-med-and-down">
         <li>
-          <a href="contact">
-            Contato
-          </a>
+          <NavLink to="/contact">
+            Contact
+          </NavLink>
         </li>
         <li>
-          <a href="about">
+          <NavLink to="/about">
             Sobre
-          </a>
+          </NavLink>
         </li>
       </ul>
     </div>
