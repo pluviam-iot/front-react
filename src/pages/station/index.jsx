@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import {
   Card,
-  CardTitle,
   Col,
   Preloader,
   Row,
 } from 'react-materialize';
 import PropTypes from 'prop-types';
 
+import WeaatherInfo from '../../components/weather_info';
 import StationService from '../../services/station_service';
 
 import './index.css';
@@ -25,11 +25,13 @@ export default class Station extends Component {
     try {
       const { match } = this.props;
       const station = await new StationService().find(match.params);
-      const data = (await new StationService().getData(station.id)).weather;
-      const last = data[data.length - 1];
+      const data = (await new StationService().getData(station.id));
+      console.log(data)
+      const last = data.weather[data.weather.length - 1];
+      console.log(last);
       this.setState({
-        station,
-        data,
+        station: data.station,
+        data: data.weather,
         last,
       });
     } catch (error) {
@@ -43,95 +45,73 @@ export default class Station extends Component {
     });
   }
 
+  loading() {
+    return (
+      <div className="center-align padding">
+        <Preloader size="small" />
+        <p>
+          Carregando...
+        </p>
+      </div>
+    );
+  }
+
+  error() {
+    return (
+      <div className="center-align padding red-text">
+        <p>
+          Ocorreu um erro ao carregar os dados, tente novamente mais tarde.
+        </p>
+      </div>
+    );
+  }
+
+  noData() {
+    return (
+      <p>Sem dados</p>
+    );
+  }
+
   render() {
-    const { last, loading, station, error } = this.state;
+    const {
+      last,
+      loading,
+      station,
+      error,
+      data,
+    } = this.state;
+
     if (!error && loading) {
-      return (
-        <div className="center-align padding">
-          <Preloader size="small" />
-          <p>
-            Carregando...
-          </p>
-        </div>
-      );
+      return this.loading();
     }
 
     if (error) {
-      return (
-        <div className="center-align padding red-text">
-          <p>
-            Ocorreu um erro ao carregar os dados, tente novamente mais tarde.
-          </p>
-        </div>
-      );
+      return this.error();
     }
 
     if (!last) {
-      return (
-        <p>Sem dados</p>
-      );
+      return this.noData();
     }
 
     return (
-      <Card>
-        <p>Última atualização: <b>{new Date(last.date).toLocaleString()}</b></p>
-        <Row className="padding center-align summary">
-          <Col s={2}>
-            <i className="wi wi-thermometer blue-text" />
-            <br />
-            <span className="title">Temperatura</span>
-            <br />
-            <span className="data">
-              {last.temperature.toLocaleString()}<br />Cº
-            </span>
-          </Col>
-          <Col s={2}>
-            <i className="wi wi-humidity blue-text" />
-            <br />
-            <span className="title">Umidade</span>
-            <br />
-            <span className="data">
-              {last.humidity.toLocaleString()}%
-            </span>
-          </Col>
-          <Col s={2}>
-            <i className="wi wi-barometer blue-text" />
-            <br />
-            <span className="title">Pressão</span>
-            <br />
-            <span className="data">
-              {last.pressure.toLocaleString()}<br />hPa
-            </span>
-          </Col>
-          <Col s={2}>
-            <i className="wi wi-rain blue-text" />
-            <br />
-            <span className="title">Chuva</span>
-            <br />
-            <span className="data">
-              {last.precipitation.toLocaleString()}<br />mm
-            </span>
-          </Col>
-          <Col s={2}>
-            <i className="wi wi-windy blue-text" />
-            <br />
-            <span className="title">Velocidade do Vento</span>
-            <br />
-            <span className="data">
-              {last.windSpeed.toLocaleString()}<br />km/h
-            </span>
-          </Col>
-          <Col s={2}>
-            <i className="wi wi-wind-direction blue-text" />
-            <br />
-            <span className="title">Direção do Vento</span>
-            <br />
-            <span className="data">
-              {last.windDirection}
-            </span>
-          </Col>
-        </Row>
-      </Card>
+      <div>
+        {(station.messages || []).map(message => <p className="alert-message red-text" key={message.message}>{message.message}</p>)}
+        <Card>
+          <p>Última atualização: <b>{new Date(last.date).toLocaleString()}</b></p>
+          <Row className="padding center-align">
+            {
+              station
+                .inputs
+                .filter(input => input.headerType === 'default')
+                .map(input => (
+                  <Col s={12} m={2} key={input.name}>
+                    <WeaatherInfo input={input} data={last} />
+                  </Col>
+                ))
+            }
+          </Row>
+        </Card>
+      </div>
     );
   }
 }

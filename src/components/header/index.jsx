@@ -12,9 +12,13 @@ const Header = () => (
       </NavLink>
       <ul className="right hide-on-med-and-down">
         <li>
-          <NavLink to="/contact">
-            Contact
-          </NavLink>
+          <a
+            rel="noopener noreferrer"
+            href="https://docs.google.com/forms/d/e/1FAIpQLSf5OUXv_KVQFwYzz4a8obBeRoSRbVNpBYHIY3k3BIH_WhmkkA/viewform?c=0&w=1"
+            target="_blank"
+          >
+            Contato
+          </a>
         </li>
         <li>
           <NavLink to="/about">

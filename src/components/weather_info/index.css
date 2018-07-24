@@ -1,0 +1,21 @@
+.weather i {
+  font-size: 3rem;
+  margin: 10px 0 5px;
+}
+
+.weather .data {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.weather .title {
+  font-weight: 100;
+  font-size: 1rem;
+  min-height: 40px;
+  display: inline-block;
+}
+
+.weather .unit {
+  font-weight: 100;
+  margin-left: 5px;
+}

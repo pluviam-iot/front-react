@@ -4,6 +4,7 @@ import { Switch, Route } from 'react-router-dom';
 
 import Station from './pages/station';
 import NotFound from './pages/not_found';
+import About from './pages/about';
 
 
 const Router = () => (
@@ -11,6 +12,7 @@ const Router = () => (
     <Container>
       <Switch>
         <Route path="/:country/:state/:city/:name" component={Station} />
+        <Route exact path="/about" component={About} />
         <Route component={NotFound} />
       </Switch>
     </Container>

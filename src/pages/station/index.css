@@ -2,23 +2,10 @@
   padding: 20px;
 }
 
-.summary i {
-  font-size: 3rem;
-  margin: 10px 0;
-}
-
-.summary .data {
-  font-size: 1.5rem;
-  font-weight: bold;
-}
-
-.summary .title {
-  font-weight: 100;
-  font-size: 1rem;
-  min-height: 40px;
-  display: inline-block;
-}
-
 .card {
   margin-top: 20px;
+}
+
+.alert-message {
+  font-size: 1.5rem;
 }
