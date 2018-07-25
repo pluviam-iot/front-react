@@ -3,7 +3,8 @@
   "globals": {
     "describe": true,
     "it": true,
-    "document": true
+    "document": true,
+    "window": true
   },
   "rules": {
     "class-methods-use-this": "off",

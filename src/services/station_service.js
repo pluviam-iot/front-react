@@ -24,4 +24,14 @@ export default class StationService {
     const { data } = await api.get(`/stations/${stationId}`);
     return data;
   }
+
+  getCumulative({ data, station }) {
+    return station
+      .inputs
+      .filter(input => input.cumulative)
+      .reduce((result, input) => {
+        result[input.name] = data.reduce((resultInternal, item) => resultInternal + +item[input.name], 0.0);
+        return result;
+      }, {});
+  }
 }

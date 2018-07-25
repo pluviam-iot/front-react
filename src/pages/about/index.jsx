@@ -2,9 +2,13 @@ import React from 'react';
 
 const About = () => (
   <section>
-    <h1>Sobre</h1>
+    <h1>Estações meteorológicas automáticas</h1>
     <p>
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Laborum rerum nostrum fugiat pariatur voluptatum aut? Tempore quas culpa ea accusantium labore sunt magnam aut. Quis eveniet reprehenderit officiis consequatur! Natus.
+      A Pluviam oferece um serviço único: estações meteorológicas conectadas na internet, que coletam informações	de temperatura, umidade, pressão atmoférica, vento e chuva e transmitem em tempo real para um servidor. Assim, você tem dados precisos e atualizados!
+    </p>
+
+    <p>
+      Você mesmo pode montar a sua e visualizar os gráficos aqui!
     </p>
   </section>
 );

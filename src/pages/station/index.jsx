@@ -8,6 +8,7 @@ import {
 import PropTypes from 'prop-types';
 
 import WeaatherInfo from '../../components/weather_info';
+import Chart from '../../components/chart';
 import StationService from '../../services/station_service';
 
 import './index.css';
@@ -23,12 +24,18 @@ export default class Station extends Component {
       loading: true,
     });
     try {
+      const stationService = new StationService();
       const { match } = this.props;
-      const station = await new StationService().find(match.params);
-      const data = (await new StationService().getData(station.id));
-      console.log(data)
+      const station = await stationService.find(match.params);
+      const data = (await stationService.getData(station.id));
       const last = data.weather[data.weather.length - 1];
-      console.log(last);
+      const cumulative = stationService.getCumulative({
+        data: data.weather,
+        station: data.station,
+      });
+      Object.keys(cumulative).forEach((key) => {
+        last[key] = cumulative[key];
+      });
       this.setState({
         station: data.station,
         data: data.weather,
@@ -111,6 +118,8 @@ export default class Station extends Component {
             }
           </Row>
         </Card>
+
+        {station.inputs.filter(input => input.chartType !== 'none').map(input => <Chart key={input.name} data={data} input={input} />)}
       </div>
     );
   }
