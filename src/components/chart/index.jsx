@@ -48,8 +48,9 @@ export default class Chart extends Component {
     data.forEach((weather) => {
       table.addRow([new Date(weather.date), weather[input.name]]);
     });
+    const chart = new window.google.visualization[input.chartType](document.getElementById(this.containerId));
     this.drawChart({
-      chart: new window.google.visualization[input.chartType](document.getElementById(this.containerId)),
+      chart,
       color: input.chartColors,
       title: `${input.shortName} - ${input.unit}`,
       data: table,

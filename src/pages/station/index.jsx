@@ -28,7 +28,9 @@ export default class Station extends Component {
       const { match } = this.props;
       const station = await stationService.find(match.params);
       const data = (await stationService.getData(station.id));
-      const last = data.weather[data.weather.length - 1];
+      const last = {
+        ...data.weather[data.weather.length - 1]
+      };
       const cumulative = stationService.getCumulative({
         data: data.weather,
         station: data.station,
