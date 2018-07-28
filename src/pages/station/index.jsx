@@ -4,6 +4,7 @@ import {
   Col,
   Preloader,
   Row,
+  ProgressBar,
 } from 'react-materialize';
 import PropTypes from 'prop-types';
 
@@ -23,13 +24,57 @@ export default class Station extends Component {
     this.setState({
       loading: true,
     });
+
     try {
       const stationService = new StationService();
       const { match } = this.props;
       const station = await stationService.find(match.params);
       const data = (await stationService.getData(station.id));
+      this.updateData(data);
+    } catch (error) {
+      console.error(error);
+      this.setState({
+        error: true,
+      });
+    }
+
+    this.intervalLast = setInterval(() => this.updateWithLast(), 60000);
+
+    this.setState({
+      loading: false,
+    });
+  }
+
+  async updateWithLast() {
+    this.setState({
+      loadingLast: true,
+    });
+
+    try {
+      const stationService = new StationService();
+      const { station } = this.state;
+      const last = await stationService.last(station._id);
+      const { weather } = last;
+      const { data } = this.state;
+      if (weather.date !== data[data.length - 1].date) {
+        data.push(weather);
+        this.updateData({
+          station,
+          weather: [...data],
+        });
+      }
+    } finally {
+      this.setState({
+        loadingLast: false,
+      });
+    }
+  }
+
+  updateData(data) {
+    try {
+      const stationService = new StationService();
       const last = {
-        ...data.weather[data.weather.length - 1]
+        ...data.weather[data.weather.length - 1],
       };
       const cumulative = stationService.getCumulative({
         data: data.weather,
@@ -44,40 +89,60 @@ export default class Station extends Component {
         last,
       });
     } catch (error) {
-      console.error(error);
-      this.setState({
-        error: true,
-      });
+      console.error('Falha ao carregar last', error);
     }
-    this.setState({
-      loading: false,
-    });
+  }
+
+  header() {
+    const { station } = this.state;
+    const link = `https://www.google.com.br/maps/place/${station.location.coordinates.latitudeDecimal},${station.location.coordinates.longitudeDecimal}`;
+    return (
+      <div center-align className="header">
+        <h1>
+          {station.fullName}<br />
+          <small>{station.location.country} - {station.location.county} - {station.location.city}</small>
+        </h1>
+        <a
+          href={link}
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          Localização
+        </a>
+      </div>
+    );
   }
 
   loading() {
     return (
-      <div className="center-align padding">
-        <Preloader size="small" />
-        <p>
-          Carregando...
-        </p>
+      <div>
+        <div className="center-align padding">
+          <Preloader size="small" />
+          <p>
+            Carregando...
+          </p>
+        </div>
       </div>
     );
   }
 
   error() {
     return (
-      <div className="center-align padding red-text">
-        <p>
-          Ocorreu um erro ao carregar os dados, tente novamente mais tarde.
-        </p>
+      <div>
+        <div className="center-align padding red-text">
+          <p>
+            Ocorreu um erro ao carregar os dados, tente novamente mais tarde.
+          </p>
+        </div>
       </div>
     );
   }
 
   noData() {
     return (
-      <p>Sem dados</p>
+      <div>
+        <p>Sem dados</p>
+      </div>
     );
   }
 
@@ -88,6 +153,7 @@ export default class Station extends Component {
       station,
       error,
       data,
+      loadingLast,
     } = this.state;
 
     if (!error && loading) {
@@ -104,9 +170,11 @@ export default class Station extends Component {
 
     return (
       <div>
+        {this.header()}
         {(station.messages || []).map(message => <p className="alert-message red-text" key={message.message}>{message.message}</p>)}
         <Card>
           <p>Última atualização: <b>{new Date(last.date).toLocaleString()}</b></p>
+          {loadingLast && <ProgressBar />}
           <Row className="padding center-align">
             {
               station

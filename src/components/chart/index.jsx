@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Card } from 'react-materialize';
 
 import './index.css';
 
@@ -12,6 +11,10 @@ export default class Chart extends Component {
       packages: ['corechart'],
     });
     this.promiseLoad = new Promise(resolve => this.charts.setOnLoadCallback(resolve));
+  }
+
+  componentWillReceiveProps() {
+    this.createChart();
   }
 
   drawChart({

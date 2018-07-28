@@ -25,6 +25,11 @@ export default class StationService {
     return data;
   }
 
+  async last(stationId) {
+    const { data } = await api.get(`/stations/${stationId}/last`);
+    return data;
+  }
+
   getCumulative({ data, station }) {
     return station
       .inputs
