@@ -5,6 +5,7 @@ import {
   Preloader,
   Row,
 } from 'react-materialize';
+import { Link } from 'react-router-dom'
 
 import WeaatherInfo from '../../components/weather_info';
 import StationService from '../../services/station_service';
@@ -101,7 +102,9 @@ export default class Home extends Component {
       <div>
         {last && last.map(station => (
           <Card key={station.station.name}>
-            <h4>{station.station.name}</h4>
+            <h4>
+              <Link to={station.station.url.replace('http://pluvi.am', '')}>{station.station.name}</Link>
+            </h4>
             <p>Última atualização: <b>{new Date(station.weather.date).toLocaleString()}</b></p>
             <Row className="padding center-align">
               {

@@ -11,8 +11,8 @@ const Router = () => (
   <div>
     <Container>
       <Switch>
-        <Route exec path="/" component={Home} />
-        <Route path="/:country/:state/:city/:name" component={Station} />
+        <Route exact path="/:country/:state/:city/:name" component={Station} />
+        <Route exact path="/" component={Home} />
         <Route exact path="/about" component={About} />
         <Route component={NotFound} />
       </Switch>
