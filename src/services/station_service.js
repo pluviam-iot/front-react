@@ -15,7 +15,7 @@ export default class StationService {
     return data.stations.find(station => (
       station.location.countryCode === country.toUpperCase()
         && station.location.countyCode === state.toUpperCase()
-        && station.location.urlCity === city
+        && station.location.urlCity.replace(/[\W]/, '') === city.replace(/[\W]/, '')
         && station.urlName === name
     ));
   }

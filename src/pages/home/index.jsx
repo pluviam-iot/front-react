@@ -4,6 +4,7 @@ import {
   Col,
   Preloader,
   Row,
+  Input,
 } from 'react-materialize';
 import { Link } from 'react-router-dom'
 
@@ -26,6 +27,7 @@ export default class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {};
+    this.handleChangeFilter = this.handleChangeFilter.bind(this);
   }
 
   async componentDidMount() {
@@ -45,6 +47,23 @@ export default class Home extends Component {
         loading: false,
       });
     }
+  }
+
+  handleChangeFilter(event) {
+    const { last } = this.state;
+    const newLast = [
+      ...last,
+    ].map((station) => {
+      const { name } = station.station;
+      return {
+        ...station,
+        hide: !name.toUpperCase().includes(event.target.value.toUpperCase()),
+      };
+    });
+
+    this.setState({
+      last: newLast,
+    });
   }
 
   async loadStations() {
@@ -83,6 +102,7 @@ export default class Home extends Component {
     );
   }
 
+  /* eslint consistent-return: "off" */
   render() {
     const {
       last,
@@ -100,27 +120,32 @@ export default class Home extends Component {
 
     return (
       <div>
-        {last && last.map(station => (
-          <Card key={station.station.name}>
-            <h4>
-              <Link to={station.station.url.replace('http://pluvi.am', '')}>{station.station.name}</Link>
-            </h4>
-            <p>Última atualização: <b>{new Date(station.weather.date).toLocaleString()}</b></p>
-            <Row className="padding center-align">
-              {
-                station
-                  .station
-                  .inputs
-                  .filter(input => INPUTS.includes(input.name))
-                  .map(input => (
-                    <Col s={12} m={4} key={input.name}>
-                      <WeaatherInfo input={input} data={station.weather} />
-                    </Col>
-                  ))
-              }
-            </Row>
-          </Card>
-        ))}
+        <Input autoFocus="true" placeholder="Filtro..." onChange={this.handleChangeFilter} />
+        {last && last.map((station) => {
+          if (station.hide) return;
+
+          return (
+            <Card key={station.station.name}>
+              <h4>
+                <Link to={station.station.url.replace('http://pluvi.am', '')}>{station.station.name}</Link>
+              </h4>
+              <p>Última atualização: <b>{new Date(station.weather.date).toLocaleString()}</b></p>
+              <Row className="padding center-align">
+                {
+                  station
+                    .station
+                    .inputs
+                    .filter(input => INPUTS.includes(input.name))
+                    .map(input => (
+                      <Col s={12} m={4} key={input.name}>
+                        <WeaatherInfo input={input} data={station.weather} />
+                      </Col>
+                    ))
+                }
+              </Row>
+            </Card>
+          );
+        })}
       </div>
     );
   }
