@@ -30,6 +30,7 @@ export default class Station extends Component {
       const { match } = this.props;
       const station = await stationService.find(match.params);
       const data = (await stationService.getData(station.id));
+
       this.updateData(data);
     } catch (error) {
       console.error(error);
@@ -58,7 +59,7 @@ export default class Station extends Component {
       const { data } = this.state;
       if (weather.date !== data[data.length - 1].date) {
         data.push(weather);
-        this.updateData({
+        this.updateDataWithLast({
           station,
           weather: [...data],
         });
@@ -70,19 +71,27 @@ export default class Station extends Component {
     }
   }
 
-  updateData(data) {
+  updateDataWithLast(data) {
+    this.updateData(data, false);
+  }
+
+  updateData(data, cumulative = true) {
     try {
       const stationService = new StationService();
       const last = {
         ...data.weather[data.weather.length - 1],
       };
-      const cumulative = stationService.getCumulative({
-        data: data.weather,
-        station: data.station,
-      });
-      Object.keys(cumulative).forEach((key) => {
-        last[key] = cumulative[key];
-      });
+
+      if (cumulative) {
+        const cumulative = stationService.getCumulative({
+          data: data.weather,
+          station: data.station,
+        });
+        Object.keys(cumulative).forEach((key) => {
+          last[key] = cumulative[key];
+        });
+      }
+
       this.setState({
         station: data.station,
         data: data.weather,

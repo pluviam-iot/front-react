@@ -10,6 +10,8 @@ const About = () => (
     <p>
       Você mesmo pode montar a sua e visualizar os gráficos aqui!
     </p>
+
+    <a href="mailto:oi@pluvi.am">Entre em contato</a>
   </section>
 );
 

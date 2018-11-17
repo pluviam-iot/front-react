@@ -35,7 +35,14 @@ export default class StationService {
       .inputs
       .filter(input => input.cumulative)
       .reduce((result, input) => {
-        result[input.name] = data.reduce((resultInternal, item) => resultInternal + +item[input.name], 0.0);
+        result[input.name] = data.reduce((resultInternal, item) => {
+          const isToday = new Date().getDay() == new Date(item.date).getDay(); // getDay is a day of Week
+          if (isToday){
+            return resultInternal + +item[input.name]
+          }
+
+          return resultInternal;
+        }, 0.0);
         return result;
       }, {});
   }
