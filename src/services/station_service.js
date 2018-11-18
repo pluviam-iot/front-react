@@ -37,8 +37,8 @@ export default class StationService {
       .reduce((result, input) => {
         result[input.name] = data.reduce((resultInternal, item) => {
           const isToday = new Date().getDay() == new Date(item.date).getDay(); // getDay is a day of Week
-          if (isToday){
-            return resultInternal + +item[input.name]
+          if (isToday && item[input.name]) {
+            return resultInternal + +item[input.name];
           }
 
           return resultInternal;

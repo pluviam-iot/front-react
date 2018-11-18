@@ -22,7 +22,7 @@ const WeatherInfo = ({ data, input }) => (
     <span className="title">{input.shortName}</span>
     <br />
     <span className="data">
-      {data[input.name] >= 0 ? data[input.name].toLocaleString() : data[input.name]}
+      {data[input.name] && data[input.name] >= 0 ? data[input.name].toLocaleString() : data[input.name]}
     </span>
     <span className="unit">{input.unit}</span>
   </div>
